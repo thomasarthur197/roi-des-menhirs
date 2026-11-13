@@ -1064,12 +1064,12 @@ function carnet(){
     <div class="p2" style="font-size:8px">Morceaux de carton (${eus.length}/6)</div>
     <div class="grille">${[0,1,2,3,4,5].map(n => n < eus.length ? `<div class="case" data-m="${eus[n]}">Morceau ${n+1}</div>` : `<div class="case vide"><div class="p2">?</div></div>`).join("")}</div>
     <div class="p2" style="font-size:8px">Rencontres</div>
-    <div class="grille">${JEU.etapes.map((e,i)=> S.persos.includes(e.perso.nom) ? `<div class="case" data-p="${i}">${esc(e.perso.nom)}</div>` : `<div class="case vide"><div class="p2">?</div></div>`).join("")}</div>
+    <div class="grille">${S.introVue ? `<div class="case" data-p="roi">Le Roi</div>` : `<div class="case vide"><div class="p2">?</div></div>`}${JEU.etapes.map((e,i)=> S.persos.includes(e.perso.nom) ? `<div class="case" data-p="${i}">${esc(e.perso.nom)}</div>` : `<div class="case vide"><div class="p2">?</div></div>`).join("")}</div>
     <p style="font-size:17px">Indices utilisés : ${S.indices}</p>
     <button class="btn clair" id="ferm">Fermer</button></div>`;
   document.body.appendChild(v);
   v.querySelectorAll("[data-m]").forEach(el => morceau(+el.dataset.m, "100%").then(c => el.prepend(c)));
-  v.querySelectorAll("[data-p]").forEach(el => { const d = document.createElement("div"); el.prepend(d); monter(d, PERSOS[JEU.etapes[+el.dataset.p].perso.dessin], 72, 114); });
+  v.querySelectorAll("[data-p]").forEach(el => { const d = document.createElement("div"); el.prepend(d); monter(d, PERSOS[el.dataset.p === "roi" ? "roi" : JEU.etapes[+el.dataset.p].perso.dessin], 72, 114); });
   v.querySelector("#ferm").onclick = () => v.remove();
   v.onclick = ev => { if(ev.target === v) v.remove(); };
 }
