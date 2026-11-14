@@ -70,6 +70,13 @@
   .prog i.roi{background:var(--or)}
   .hud-d{display:flex;gap:6px;flex:none}
 
+  /* --- Drapeaux de langue --- */
+  .langues{display:inline-flex;gap:4px;align-items:center}
+  .drapeau{padding:2px;border:2px solid #000;background:#fffaf0;cursor:pointer;line-height:0;opacity:.55}
+  .drapeau.actif{opacity:1;box-shadow:0 0 0 2px var(--or)}
+  .drapeau svg{display:block}
+  .langues-accueil{position:absolute;top:8px;right:8px;z-index:30}
+
   /* --- Accueil --- */
   .titre-zone{position:absolute;top:34px;left:0;right:0;text-align:center;z-index:3}
   .titre{font-size:18px;line-height:1.5;color:#fff;margin:0;text-shadow:3px 3px 0 var(--encre),-2px -2px 0 var(--encre),2px -2px 0 var(--encre),-2px 2px 0 var(--encre)}
@@ -155,6 +162,7 @@
 <div class="console"><div class="ecran" id="app"></div></div>
 
 <script src="jeu.js"></script>
+<script src="jeu-en.js"></script>
 <script>
 /* =================================================================
    CONTENU DU JEU — la seule partie qu'Arthur modifie.
@@ -164,6 +172,85 @@
 /* =================================================================
    MOTEUR — Arthur n'a pas besoin d'y toucher.
    ================================================================= */
+
+/* =================================================================
+   LANGUES — textes de l'interface (le contenu du jeu est dans jeu.js et jeu-en.js)
+   ================================================================= */
+const TXT = {
+  fr: {
+    continuer: "Continuer ▶", recommencer: "Recommencer depuis le début", nomEquipe: "Nom de votre équipe", commencer: "Commencer l'aventure ▶",
+    equipeDefaut: "Les Aventuriers", recommencerQ: "Recommencer ?", effacer: "Toute la progression de l'équipe sera effacée.", oui: "Oui, recommencer", annuler: "Annuler",
+    carte: "Carte", carnet: "Carnet", jardin: "Jardin de la mairie", leRoi: "Le Roi", bourg: "Le bourg",
+    osm: km => `Plan : © contributeurs OpenStreetMap · parcours ${km.replace(".", ",")} km`,
+    termine: nom => `Terminé — ${nom} vous a aidés`, allez: "Allez sur place, puis touchez ici", verrouille: "Verrouillé",
+    finaleVerrou: "Finale — trouvez d'abord tous les indices", finaleOuverte: "Retournez voir le Roi !",
+    ouvrirCadenas: "Ouvrir le cadenas", votreReponse: "Votre réponse…", valider: "Valider",
+    toucher2: "1. Touchez 2 cloches pour les poser sur la balance", peser: "⚖️ Peser", laquelle: "2. Laquelle est la plus lourde ?",
+    legerLourd: "Du plus léger ➜ au plus lourd", ordreObjets: "Touchez les objets dans l'ordre :", verifier: "Vérifier",
+    enigme: "Énigme", finale: "Finale", piecesIndice: "Pièces d'indice", pieceIndice: "Pièce d'indice",
+    bravo: "Bravo ! C'est la bonne réponse !", rate: "Hmm… pas tout à fait. Réessayez !",
+    plusDePesee: "⚖️ Plus de pesée !", peserReste: r => `⚖️ Peser (${r} pesée${r > 1 ? "s" : ""} restante${r > 1 ? "s" : ""})`,
+    pesee: (n, a, b) => `Pesée ${n} : ${a} est plus lourde que ${b}.`, melange: "Raté ! Gaston a mélangé les cloches… Recommencez les pesées !",
+    pasTout: "Pas tout à fait… Touchez un objet rangé pour le retirer.", indice: (k, t) => `Indice ${k} : ${t}`,
+    vide: "vide", pret: "Prêt à peser !",
+    nouveauMorceau: "Nouveau morceau !", range: n => `Rangé dans le carnet du Roi (${n}/6)`, retourCarte: "Retour à la carte ▶",
+    numeros: "Affiche le numéro de chaque morceau", completeCP: "Bravo ! La carte postale est complète !",
+    uneCP: "Une carte postale !", montrer: "Montrer au Roi ▶",
+    fini: "Aventure terminée !", chevaliers: "Chevaliers des Trois Piliers", retrouve: d => `a retrouvé les amis du Roi des menhirs le ${d}`,
+    indicesUtilises: n => `${n} indice${n > 1 ? "s" : ""} utilisé${n > 1 ? "s" : ""}`, accueil: "Accueil", locale: "fr-FR",
+    carnetTitre: "Carnet du Roi", morceaux: n => `Morceaux de carton (${n}/6)`, morceau: n => `Morceau ${n}`, rencontres: "Rencontres",
+    indicesCarnet: n => `Indices utilisés : ${n}`, fermer: "Fermer",
+    cpTitre: "Bons baisers de Vendée !", cpPlage: "La plage", cpChateau: "Le château", cpMarais: "Le marais"
+  },
+  en: {
+    continuer: "Continue ▶", recommencer: "Start again from the beginning", nomEquipe: "Your team name", commencer: "Start the adventure ▶",
+    equipeDefaut: "The Adventurers", recommencerQ: "Start again?", effacer: "All of the team's progress will be erased.", oui: "Yes, start again", annuler: "Cancel",
+    carte: "Map", carnet: "Notebook", jardin: "Town hall garden", leRoi: "The King", bourg: "Village centre",
+    osm: km => `Map: © OpenStreetMap contributors · route ${km} km`,
+    termine: nom => `Done — ${nom} helped you`, allez: "Go there, then tap here", verrouille: "Locked",
+    finaleVerrou: "Finale — find all the clues first", finaleOuverte: "Go back to the King!",
+    ouvrirCadenas: "Open the padlock", votreReponse: "Your answer…", valider: "Check",
+    toucher2: "1. Tap 2 bells to put them on the scale", peser: "⚖️ Weigh", laquelle: "2. Which one is the heaviest?",
+    legerLourd: "From lightest ➜ to heaviest", ordreObjets: "Tap the things in order:", verifier: "Check",
+    enigme: "Puzzle", finale: "Finale", piecesIndice: "Hint coins", pieceIndice: "Hint coin",
+    bravo: "Well done! That's the right answer!", rate: "Hmm… not quite. Try again!",
+    plusDePesee: "⚖️ No weighings left!", peserReste: r => `⚖️ Weigh (${r} weighing${r > 1 ? "s" : ""} left)`,
+    pesee: (n, a, b) => `Weighing ${n}: ${a} is heavier than ${b}.`, melange: "Oops! Gaston mixed up the bells… Start the weighings again!",
+    pasTout: "Not quite… Tap a placed item to remove it.", indice: (k, t) => `Hint ${k}: ${t}`,
+    vide: "empty", pret: "Ready to weigh!",
+    nouveauMorceau: "New piece!", range: n => `Kept in the King's notebook (${n}/6)`, retourCarte: "Back to the map ▶",
+    numeros: "Shows the number of each piece", completeCP: "Well done! The postcard is complete!",
+    uneCP: "A postcard!", montrer: "Show the King ▶",
+    fini: "Adventure complete!", chevaliers: "Knights of the Three Pillars", retrouve: d => `found the Menhir King's friends on ${d}`,
+    indicesUtilises: n => `${n} hint${n > 1 ? "s" : ""} used`, accueil: "Home", locale: "en-GB",
+    carnetTitre: "The King's notebook", morceaux: n => `Pieces of cardboard (${n}/6)`, morceau: n => `Piece ${n}`, rencontres: "Characters met",
+    indicesCarnet: n => `Hints used: ${n}`, fermer: "Close",
+    cpTitre: "Greetings from Vendée!", cpPlage: "The beach", cpChateau: "The castle", cpMarais: "The marsh"
+  }
+};
+const navEn = (() => { try { return /^en/i.test(navigator.language || ""); } catch(e){ return false; } })();
+let LANGUE = "fr";
+let JEU = JEU_FR;
+const t = k => TXT[LANGUE][k];
+function appliquerLangue(l){ LANGUE = l === "en" ? "en" : "fr"; JEU = LANGUE === "en" ? JEU_EN : JEU_FR; document.documentElement.lang = LANGUE; }
+
+/* Petits drapeaux pixel pour changer de langue */
+const DRAPEAUX = {
+  fr: `<svg viewBox="0 0 9 6" width="27" height="18" shape-rendering="crispEdges"><rect width="3" height="6" fill="#1f4fa8"/><rect x="3" width="3" height="6" fill="#fff"/><rect x="6" width="3" height="6" fill="#d6332a"/></svg>`,
+  en: `<svg viewBox="0 0 60 40" width="27" height="18"><rect width="60" height="40" fill="#1f3f8a"/><path d="M0 0 L60 40 M60 0 L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0 L60 40 M60 0 L0 40" stroke="#d6332a" stroke-width="3"/><path d="M30 0 V40 M0 20 H60" stroke="#fff" stroke-width="12"/><path d="M30 0 V40 M0 20 H60" stroke="#d6332a" stroke-width="7"/></svg>`
+};
+function drapeaux(){
+  return `<span class="langues">${["fr","en"].map(l => `<button class="drapeau${l === LANGUE ? " actif" : ""}" data-langue="${l}" aria-label="${l === "fr" ? "Français" : "English"}">${DRAPEAUX[l]}</button>`).join("")}</span>`;
+}
+function brancherLangues(){
+  document.querySelectorAll("[data-langue]").forEach(b => b.onclick = ev => {
+    ev.stopPropagation(); if(b.dataset.langue === LANGUE) return;
+    appliquerLangue(b.dataset.langue); S.lang = LANGUE; sauver(); cartePostale = null;
+    /* on revient à un écran stable dans la nouvelle langue */
+    if(!S.introVue) accueil(); else if(S.fini) victoire(); else carte();
+  });
+}
+
 const CLE = "roi-menhirs-v1";
 const melangeMorceaux = () => { const o = [0,1,2,3,4,5]; for(let i = 5; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; } return o; };
 const VIDE = () => ({ ordre: melangeMorceaux(), styleCarte:"A", equipe:"", introVue:false, faites:[], carnet:[], persos:[], indices:0, fini:false });
@@ -184,7 +271,8 @@ function sauver(){ try { localStorage.setItem(CLE, JSON.stringify(S)); } catch(e
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function norm(s){ return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim(); }
 const ok = (saisie, liste) => liste.some(r => norm(r) === norm(saisie));
-const BADGE = JEU.demo ? '<div class="demo p2">DÉMO</div>' : '';
+appliquerLangue(S.lang || (navEn ? "en" : "fr"));
+const BADGE = '';  /* la mention DÉMO est gérée par JEU.demo dans le bandeau */
 
 /* ---------- Pixelisation : n'importe quel dessin vectoriel → pixel art ----------
    Le dessin est rendu en très basse résolution puis agrandi sans lissage.
@@ -525,7 +613,7 @@ const TAILLE = { coq: .6 };
 const COUPE = { roi:138, romain:134, marchande:126, boiliere:142, grenouille:170, mystere:140 }; // les menhirs ne bougent pas, même pas pour respirer
 function scene({ decor, perso, texte, fin, lieu, ici }){
   vider();
-  const p = perso || { nom: "Le Roi", dessin: "roi" };
+  const p = perso || { nom: t("leRoi"), dessin: "roi" };
   const L = texte.map(l => l.startsWith("ROI:") ? l.slice(4).trim() : l);
   app.innerHTML = `${hud(lieu || "", ici)}<div class="fond" id="fond"></div>
     <div class="acteur seul"><div class="${IMMOBILES.includes(p.dessin) ? "" : "respire"}" id="sPerso"></div></div>
@@ -537,7 +625,7 @@ function scene({ decor, perso, texte, fin, lieu, ici }){
   monter("#sPerso", PERSOS[p.dessin], 72, 114);
   const acteur = app.querySelector(".acteur.seul"), bulle = app.querySelector("#bulle");
   const placer = () => { if(!acteur.isConnected) return removeEventListener("resize", placer);
-    const t = TAILLE[p.dessin] || 1; acteur.style.width = (68 * t) + "%"; acteur.style.left = ((100 - 68 * t) / 2) + "%";
+    const tl = TAILLE[p.dessin] || 1; acteur.style.width = (68 * tl) + "%"; acteur.style.left = ((100 - 68 * tl) / 2) + "%";
     const w = acteur.offsetWidth, hautBulle = bulle.offsetHeight + 10;
     acteur.style.bottom = (hautBulle - (190 - (COUPE[p.dessin] || 140)) * w / 120) + "px"; };
   placer(); addEventListener("resize", placer);
@@ -559,11 +647,12 @@ function scene({ decor, perso, texte, fin, lieu, ici }){
 /* Bandeau du haut : lieu, progression, accès à la carte et au carnet */
 function hud(lieu, ici){
   const cases = JEU.etapes.map(e => `<i class="${S.faites.includes(e.id) ? "ok" : e.id === ici ? "ici" : ""}" title="${esc(e.lieu)}"></i>`).join("")
-    + `<i class="${S.fini ? "ok" : ici === "roi" ? "ici" : "roi"}" title="Le Roi"></i>`;
+    + `<i class="${S.fini ? "ok" : ici === "roi" ? "ici" : "roi"}" title="${t("leRoi")}"></i>`;
   return `<div class="hud"><div><div class="hud-lieu p2">${esc(lieu)}</div><div class="prog">${cases}</div>${JEU.demo ? `<div class="hud-demo p2" style="margin-top:6px">DÉMO</div>` : ""}</div>
-    <div class="hud-d">${S.introVue ? `<button class="btn mini clair" data-hud="carte">Carte</button>` : ""}<button class="btn mini clair" data-hud="carnet">Carnet</button></div></div>`;
+    <div class="hud-d">${drapeaux()}${S.introVue ? `<button class="btn mini clair" data-hud="carte">${t("carte")}</button>` : ""}<button class="btn mini clair" data-hud="carnet">${t("carnet")}</button></div></div>`;
 }
 function brancherHud(){
+  brancherLangues();
   app.querySelectorAll("[data-hud]").forEach(b => b.onclick = ev => { ev.stopPropagation(); b.dataset.hud === "carte" ? carte() : carnet(); });
 }
 
@@ -577,15 +666,15 @@ function cloche(cx, y, s, c){
     <circle cx="0" cy="40" r="4" fill="#f2c335" stroke="#2a2420" stroke-width="2"/></g>`;
 }
 function balanceSVG(objets, pente){
-  const t = pente * 11 * Math.PI / 180, cx = 150, cy = 46, L = 104;
-  const ex = [cx - L * Math.cos(t), cx + L * Math.cos(t)], ey = [cy - L * Math.sin(t), cy + L * Math.sin(t)];
+  const ang = pente * 11 * Math.PI / 180, cx = 150, cy = 46, L = 104;
+  const ex = [cx - L * Math.cos(ang), cx + L * Math.cos(ang)], ey = [cy - L * Math.sin(ang), cy + L * Math.sin(ang)];
   const plateau = (i) => { const x = ex[i], y = ey[i] + 46, o = objets[i];
     return `<path d="M${x} ${ey[i]} L${x-34} ${y} M${x} ${ey[i]} L${x+34} ${y}" stroke="#2a2420" stroke-width="2"/>
       ${o ? cloche(x, y - 44, 1.15, o.couleur) : ""}
       <path d="M${x-40} ${y} H${x+40} L${x+30} ${y+12} H${x-30}Z" fill="#d9b36a" stroke="#2a2420" stroke-width="3" stroke-linejoin="round"/>
       <rect x="${x-36}" y="${y+2}" width="72" height="3" fill="#f2d79a"/>
-      <text x="${x}" y="${y+32}" text-anchor="middle" font-family="ChiffresPx, Pixelify Sans, monospace" font-size="17" font-weight="600" fill="${o ? o.couleur : "#8a7a62"}">${o ? esc(o.texte) : "vide"}</text>`; };
-  const msg = pente ? "" : objets.length === 2 ? "Prêt à peser !" : "";
+      <text x="${x}" y="${y+32}" text-anchor="middle" font-family="ChiffresPx, Pixelify Sans, monospace" font-size="17" font-weight="600" fill="${o ? o.couleur : "#8a7a62"}">${o ? esc(o.texte) : t("vide")}</text>`; };
+  const msg = pente ? "" : objets.length === 2 ? t("pret") : "";
   return `<svg viewBox="0 0 300 170" width="100%" shape-rendering="crispEdges" style="display:block;background:#fbf3dc;border:3px solid #2a2420">
     <rect x="132" y="150" width="36" height="12" fill="#5b3a1e"/><rect x="144" y="${cy}" width="12" height="106" fill="#7a5230" stroke="#2a2420" stroke-width="2"/>
     <path d="M${ex[0]} ${ey[0]} L${ex[1]} ${ey[1]}" stroke="#5b3a1e" stroke-width="8" stroke-linecap="round"/>
@@ -598,16 +687,17 @@ function balanceSVG(objets, pente){
 function accueil(){
   vider();
   const enCours = S.introVue;
-  app.innerHTML = `${BADGE}<div class="fond" id="fond"></div>
+  app.innerHTML = `${BADGE}<div class="langues-accueil">${drapeaux()}</div><div class="fond" id="fond"></div>
     <div class="titre-zone"><h1 class="titre p2">${esc(JEU.titre)}</h1><div class="sous p2">${esc(JEU.sousTitre)}</div></div>
     <div class="acteur seul accueil-roi" id="roiAccueil"><div id="sRoi"></div></div>
     <div class="bas">
-      ${enCours ? `<button class="btn" id="go">Continuer ▶</button><button class="lien" id="raz">Recommencer depuis le début</button>`
-               : `<input class="champ" id="equipe" maxlength="24" placeholder="Nom de votre équipe" value="${esc(S.equipe)}">
-                  <button class="btn" id="go">Commencer l'aventure ▶</button>`}
+      ${enCours ? `<button class="btn" id="go">${t("continuer")}</button><button class="lien" id="raz">${t("recommencer")}</button>`
+               : `<input class="champ" id="equipe" maxlength="24" placeholder="${t("nomEquipe")}" value="${esc(S.equipe)}">
+                  <button class="btn" id="go">${t("commencer")}</button>`}
     </div>`;
   monter("#fond", DECORS.accueil, 150, 200);
   monter("#sRoi", PERSOS.roi, 72, 114);
+  brancherLangues();
   /* les pieds du Roi passent sous le champ « Nom de votre équipe » */
   const roiA = app.querySelector("#roiAccueil"), bas = app.querySelector(".bas");
   const placerRoi = () => { if(!roiA.isConnected) return removeEventListener("resize", placerRoi);
@@ -615,8 +705,8 @@ function accueil(){
   placerRoi(); addEventListener("resize", placerRoi);
   app.querySelector("#go").onclick = () => {
     if(!enCours){
-      S.equipe = app.querySelector("#equipe").value.trim() || "Les Aventuriers"; sauver();
-      scene({ decor:"mairie", perso:null, texte:JEU.intro, lieu:"Jardin de la mairie", ici:"roi", fin:() => { S.introVue = true; sauver(); recompense(JEU.morceauRoi, S.ordre[0], carte); } });
+      S.equipe = app.querySelector("#equipe").value.trim() || t("equipeDefaut"); sauver();
+      scene({ decor:"mairie", perso:null, texte:JEU.intro, lieu:t("jardin"), ici:"roi", fin:() => { S.introVue = true; sauver(); recompense(JEU.morceauRoi, S.ordre[0], carte); } });
     } else S.fini ? victoire() : carte();
   };
   const r = app.querySelector("#raz"); if(r) r.onclick = confirmerRaz;
@@ -624,8 +714,8 @@ function accueil(){
 
 function confirmerRaz(){
   const v = document.createElement("div"); v.className = "voile";
-  v.innerHTML = `<div class="carnet"><h2 class="p2">Recommencer ?</h2><p style="font-size:18px">Toute la progression de l'équipe sera effacée.</p>
-    <div style="display:flex;flex-direction:column;gap:10px"><button class="btn" id="oui">Oui, recommencer</button><button class="btn clair" id="non">Annuler</button></div></div>`;
+  v.innerHTML = `<div class="carnet"><h2 class="p2">${t("recommencerQ")}</h2><p style="font-size:18px">${t("effacer")}</p>
+    <div style="display:flex;flex-direction:column;gap:10px"><button class="btn" id="oui">${t("oui")}</button><button class="btn clair" id="non">${t("annuler")}</button></div></div>`;
   document.body.appendChild(v);
   v.querySelector("#oui").onclick = () => { v.remove(); S = VIDE(); sauver(); accueil(); };
   v.querySelector("#non").onclick = () => v.remove();
@@ -645,25 +735,25 @@ function carte(){
     return `<button class="mq ${l.e} ${ou==="loupe"?"petit":""}" data-c="${l.c}" style="left:${x/300*100}%;top:${y/200*100}%">${l.e==="fait"?"✓":l.lab}</button>`; };
   const [zx,zy,zw,zh] = LOUPE_ZONE;
   app.innerHTML = `<div class="carte-page">
-    <div class="barre"><span class="p2">${esc(S.equipe)}${JEU.demo ? ` <span style="color:var(--or)">· DÉMO</span>` : ""}</span><button class="btn mini clair" id="carnetBtn">Carnet</button></div>
+    <div class="barre"><span class="p2">${esc(S.equipe)}${JEU.demo ? ` <span style="color:var(--or)">· DÉMO</span>` : ""}</span><span class="hud-d">${drapeaux()}<button class="btn mini clair" id="carnetBtn">${t("carnet")}</button></span></div>
     <div class="carte"><div id="plan"></div>
       <div class="zone" style="left:${zx/3}%;top:${zy/2}%;width:${zw/3}%;height:${zh/2}%"></div>
       ${lieux.filter(l => POSITIONS.plan[l.id] && !POSITIONS.loupe[l.id]).map(l => mq(l,"plan")).join("")}
-      <div class="loupe"><div id="loupeImg"></div><div class="etiq">Le bourg</div>
+      <div class="loupe"><div id="loupeImg"></div><div class="etiq">${t("bourg")}</div>
         ${lieux.filter(l => POSITIONS.loupe[l.id]).map(l => mq(l,"loupe")).join("")}</div>
     </div>
-    <div class="osm">Plan : © contributeurs OpenStreetMap · parcours ${(LONGUEUR_M/1000).toFixed(1).replace(".",",")} km</div>
+    <div class="osm">${t("osm")((LONGUEUR_M/1000).toFixed(1))}</div>
     <div class="liste">
       ${JEU.etapes.map((e,i) => { const s = etat(i); return `<button class="ligne ${s==="verrou"?"verrou":""}" data-c="${i}">
         <span class="n" style="background:${coul(s)}">${s==="fait"?"✓":i+1}</span>
-        <span>${esc(e.lieu)}<small>${s==="fait" ? "Terminé — "+esc(e.perso.nom)+" vous a aidés" : s==="suivant" ? "Allez sur place, puis touchez ici" : "Verrouillé"}</small></span></button>`; }).join("")}
+        <span>${esc(e.lieu)}<small>${s==="fait" ? t("termine")(esc(e.perso.nom)) : s==="suivant" ? t("allez") : t("verrouille")}</small></span></button>`; }).join("")}
       <button class="ligne ${etatF==="verrou"?"verrou":""}" data-c="f"><span class="n" style="background:${coul(etatF)}">★</span>
-        <span>${esc(JEU.finale.lieu)}<small>${etatF==="verrou" ? "Finale — trouvez d'abord tous les indices" : "Retournez voir le Roi !"}</small></span></button>
+        <span>${esc(JEU.finale.lieu)}<small>${etatF==="verrou" ? t("finaleVerrou") : t("finaleOuverte")}</small></span></button>
     </div></div>`;
   const res = style === "A" ? [[300,200],[240,160]] : [[210,140],[150,100]];
   monter("#plan", CARTES[style].plan, ...res[0]);
   monter("#loupeImg", CARTES[style].loupe, ...res[1]);
-  app.querySelector("#carnetBtn").onclick = carnet;
+  app.querySelector("#carnetBtn").onclick = carnet; brancherLangues();
   app.querySelectorAll("[data-c]").forEach(b => b.onclick = () => {
     const c = b.dataset.c;
     if(c === "f"){ if(etatF === "suivant") finale(); return; }
@@ -689,47 +779,47 @@ function enigme({ num, perso, enig, indices, reussi }){
     saisie = `<div class="cadenas">${Array.from({length:enig.taille},(_,k)=>`<div class="mol">
       <button data-k="${k}" data-d="1" aria-label="Plus">▲</button><div class="chif p2" id="c${k}">0</div>
       <button data-k="${k}" data-d="-1" aria-label="Moins">▼</button></div>`).join("")}</div>
-      <button class="btn" id="valider">Ouvrir le cadenas</button>`;
+      <button class="btn" id="valider">${t("ouvrirCadenas")}</button>`;
   } else if(enig.type === "texte"){
-    saisie = `<input class="champ" id="rep" autocomplete="off" placeholder="${esc(enig.placeholder||"Votre réponse…")}">
-      <div style="height:10px"></div><button class="btn" id="valider">Valider</button>`;
+    saisie = `<input class="champ" id="rep" autocomplete="off" placeholder="${esc(enig.placeholder||t("votreReponse"))}">
+      <div style="height:10px"></div><button class="btn" id="valider">${t("valider")}</button>`;
   } else if(enig.type === "balance"){
     saisie = `<div id="plateau" style="margin:0 -6px 6px"></div>
-      <div class="p2" style="font-size:8px;margin-bottom:6px">1. Touchez 2 cloches pour les poser sur la balance</div>
+      <div class="p2" style="font-size:8px;margin-bottom:6px">${t("toucher2")}</div>
       <div class="choix" style="grid-template-columns:repeat(3,1fr)">${enig.objets.map((o,k)=>`<button class="opt objb" data-b="${k}" style="flex-direction:column;justify-content:center;gap:2px;text-align:center;padding:6px 4px">
         <svg viewBox="0 0 40 44" width="44" shape-rendering="crispEdges">${cloche(20,2,1,o.couleur)}</svg><b style="color:${o.couleur}">${esc(o.texte)}</b></button>`).join("")}</div>
-      <div style="height:8px"></div><button class="btn clair" id="peser">⚖️ Peser</button>
+      <div style="height:8px"></div><button class="btn clair" id="peser">${t("peser")}</button>
       <div id="journal" style="font-size:17px;margin-top:8px"></div>
-      <div class="p2" style="font-size:8px;margin:12px 0 6px">2. Laquelle est la plus lourde ?</div>
+      <div class="p2" style="font-size:8px;margin:12px 0 6px">${t("laquelle")}</div>
       <div class="choix" style="grid-template-columns:repeat(3,1fr)">${enig.objets.map((o,k)=>`<button class="opt repb" data-r="${k}" style="justify-content:center;color:${o.couleur};font-weight:600">${esc(o.texte)}</button>`).join("")}</div>`;
   } else if(enig.type === "classement"){
-    saisie = `<div class="p2" style="font-size:8px;margin-bottom:6px">Du plus léger ➜ au plus lourd</div>
+    saisie = `<div class="p2" style="font-size:8px;margin-bottom:6px">${t("legerLourd")}</div>
       <div id="cases" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px"></div>
-      <div class="p2" style="font-size:8px;margin-bottom:6px">Touchez les objets dans l'ordre :</div>
+      <div class="p2" style="font-size:8px;margin-bottom:6px">${t("ordreObjets")}</div>
       <div id="reserve" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"></div>
-      <div style="height:10px"></div><button class="btn" id="valider" disabled>Vérifier</button>`;
+      <div style="height:10px"></div><button class="btn" id="valider" disabled>${t("verifier")}</button>`;
   } else {
     saisie = `<div class="choix">${enig.options.map((o,k)=>`<button class="opt" data-o="${k}"><span data-em="${k}"></span>${esc(o.texte)}</button>`).join("")}</div>`;
   }
   app.innerHTML = `<div class="enigme">
-    <div class="entete"><span class="p2">Énigme ${typeof num==="number" ? String(num).padStart(3,"0") : num}</span><span style="display:flex;gap:6px"><button class="btn mini clair" data-hud="carte">Carte</button><button class="btn mini clair" data-hud="carnet">Carnet</button></span></div>
+    <div class="entete"><span class="p2">${typeof num==="number" ? t("enigme") + " " + String(num).padStart(3,"0") : num}</span><span style="display:flex;gap:6px;align-items:center">${drapeaux()}<button class="btn mini clair" data-hud="carte">${t("carte")}</button><button class="btn mini clair" data-hud="carnet">${t("carnet")}</button></span></div>
     <div class="feuille" id="feuille"><div class="portrait" id="portrait"></div>
       <p class="question">${esc(enig.question)}</p>${enig.image ? `<div class="rebus" id="rebus"></div>` : ""}${saisie}<div class="msg" id="msg"></div></div>
-    <div class="indices-zone"><div class="p2" style="font-size:9px">Pièces d'indice</div>
+    <div class="indices-zone"><div class="p2" style="font-size:9px">${t("piecesIndice")}</div>
       <div class="pieces">${indices.map((_,k)=>`<button class="piece" data-i="${k}" ${k>0?"disabled":""}>?</button>`).join("")}</div>
       <div id="indZone"></div></div></div>`;
   brancherHud();
   monter("#portrait", PERSOS[perso.dessin], 72, 114);
   if(enig.type === "choix") enig.options.forEach((o,k) => { if(o.emoji) app.querySelector(`[data-em="${k}"]`).appendChild(emojiPixel(o.emoji)); });
   if(enig.image) enig.image.forEach(t => { const r = app.querySelector("#rebus");
-    if(/^[+=\-?]$/.test(t) || /^[IVXLCDM]+$/.test(t)){ const s = document.createElement("span"); s.className = "p2"; s.textContent = t; r.appendChild(s); }
+    if(/^[+=\-?]$/.test(t) || /^[A-Z]{1,4}$/.test(t)){ const s = document.createElement("span"); s.className = "p2"; s.textContent = t; r.appendChild(s); }
     else { const c = emojiPixel(t, 22); c.style.width = "72px"; r.appendChild(c); } });
   const msg = app.querySelector("#msg"), f = app.querySelector("#feuille");
   const rate = () => { if(valide) return; msg.className = "msg ko"; msg.textContent = "Hmm… pas tout à fait. Réessayez !"; f.classList.remove("shake"); void f.offsetWidth; f.classList.add("shake"); };
   let valide = false;
   const gagne = () => { if(valide) return; valide = true;
     app.querySelectorAll("#feuille button, #feuille input").forEach(el => el.disabled = true);
-    msg.className = "msg ok"; msg.textContent = "Bravo ! C'est la bonne réponse !"; setTimeout(reussi, 900); };
+    msg.className = "msg ok"; msg.textContent = t("bravo"); setTimeout(reussi, 900); };
   if(enig.type === "cadenas"){
     const v = Array(enig.taille).fill(0);
     app.querySelectorAll(".mol button").forEach(b => b.onclick = () => {
@@ -751,7 +841,7 @@ function enigme({ num, perso, enig, indices, reussi }){
         b.style.background = on ? "#fff3b0" : ""; b.style.borderWidth = on ? "4px" : ""; });
       const p = app.querySelector("#peser"), reste = enig.pesees - pesees;
       p.disabled = sel.length !== 2 || reste <= 0;
-      p.textContent = reste <= 0 ? "⚖️ Plus de pesée !" : `⚖️ Peser (${reste} pesée${reste > 1 ? "s" : ""} restante${reste > 1 ? "s" : ""})`;
+      p.textContent = reste <= 0 ? t("plusDePesee") : t("peserReste")(reste);
     };
     app.querySelectorAll(".objb").forEach(b => b.onclick = () => { const k = +b.dataset.b;
       sel = sel.includes(k) ? sel.filter(x => x !== k) : sel.concat(k).slice(-2); maj(); afficher(0); });
@@ -759,13 +849,13 @@ function enigme({ num, perso, enig, indices, reussi }){
       if(sel.length !== 2 || pesees >= enig.pesees) return;
       const [g, d] = sel, lourd = poids[g] > poids[d] ? g : d, leger = lourd === g ? d : g;
       pesees++; afficher(lourd === g ? -1 : 1);
-      const l = document.createElement("div"); l.innerHTML = `Pesée ${pesees} : ${nom(lourd)} est plus lourde que ${nom(leger)}.`;
+      const l = document.createElement("div"); l.innerHTML = t("pesee")(pesees, nom(lourd), nom(leger));
       app.querySelector("#journal").appendChild(l);
       sel = []; maj();
     };
     app.querySelectorAll(".repb").forEach(b => b.onclick = () => {
       if(poids[+b.dataset.r] === 3) return gagne();
-      rate(); msg.textContent = "Raté ! Gaston a mélangé les cloches… Recommencez les pesées !"; melanger();
+      rate(); msg.textContent = t("melange"); melanger();
     });
     melanger();
   } else if(enig.type === "classement"){
@@ -797,14 +887,14 @@ function enigme({ num, perso, enig, indices, reussi }){
       });
       app.querySelector("#valider").disabled = choix.length !== enig.objets.length;
     };
-    app.querySelector("#valider").onclick = () => choix.every((k, i) => k === i) ? gagne() : (rate(), msg.textContent = "Pas tout à fait… Touchez un objet rangé pour le retirer.");
+    app.querySelector("#valider").onclick = () => choix.every((k, i) => k === i) ? gagne() : (rate(), msg.textContent = t("pasTout"));
     dessiner();
   } else {
     app.querySelectorAll(".opt").forEach(b => b.onclick = () => +b.dataset.o === enig.bonne ? gagne() : rate());
   }
   app.querySelectorAll(".piece").forEach(p => p.onclick = () => {
     const k = +p.dataset.i; if(k !== vus) return;
-    const d = document.createElement("div"); d.className = "indice"; d.textContent = `Indice ${k+1} : ${indices[k]}`;
+    const d = document.createElement("div"); d.className = "indice"; d.textContent = t("indice")(k+1, indices[k]);
     app.querySelector("#indZone").appendChild(d); p.disabled = true; p.textContent = "✓";
     vus++; S.indices++; sauver();
     const suiv = app.querySelector(`.piece[data-i="${vus}"]`); if(suiv) suiv.disabled = false;
@@ -849,7 +939,7 @@ function amiCP(x, y, s, o = {}){
   </g>`;
 }
 const titreCP = (y = 8) => `<rect x="36" y="${y}" width="268" height="30" fill="#fffaf0" stroke="${K}" stroke-width="3"/>
-  <text x="170" y="${y+21}" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="16" fill="#c0392b">Bons baisers de Vendée !</text>`;
+  <text x="170" y="${y+21}" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="16" fill="#c0392b">${esc(t("cpTitre"))}</text>`;
 const timbreCP = (x = 312, y = 8) => `<rect x="${x}" y="${y}" width="40" height="46" fill="#fffaf0" stroke="#c0392b" stroke-width="2.5" stroke-dasharray="4 3"/>
   <path d="M${x+8} ${y+38} L${x+14} ${y+14} Q${x+20} ${y+8} ${x+26} ${y+14} L${x+32} ${y+38}Z" fill="#b9b1a3" stroke="${K}" stroke-width="2"/>
   <path d="M${x+15} ${y+12} L${x+16} ${y+5} L${x+20} ${y+9} L${x+24} ${y+5} L${x+25} ${y+12}Z" fill="#f2c335" stroke="${K}" stroke-width="1.2"/>`;
@@ -864,7 +954,7 @@ const vagues = (y, n = 6, c = "#bfe3f5") => `<g stroke="${c}" stroke-width="3" f
 
 const CARTES_POSTALES = {
   /* A — La carte de la Vendée : le trajet des deux amis, d'Avrillé à la plage, à l'île d'Yeu et au marais */
-  A: sv("0 0 360 240",360,240,`
+  A: () => sv("0 0 360 240",360,240,`
     <rect width="360" height="240" fill="#4aa3df"/>${vagues(60,5)}${vagues(200,3)}
     <path d="M150 0 L360 0 L360 240 L190 240 Q178 214 160 196 Q138 176 136 150 Q122 124 130 98 Q118 66 132 40 Q132 18 150 0Z" fill="#a8d07a" stroke="${K}" stroke-width="3"/>
     <g fill="#8cc063">${[[220,60],[300,90],[260,150],[330,40],[210,120]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="10"/>`).join("")}</g>
@@ -885,7 +975,7 @@ const CARTES_POSTALES = {
     ${titreCP()}${timbreCP()}`),
 
   /* B — Le triptyque : trois photos de vacances, la plage, le château, le marais */
-  B: sv("0 0 360 240",360,240,`
+  B: () => sv("0 0 360 240",360,240,`
     <rect width="360" height="240" fill="#fffaf0"/>
     <defs><clipPath id="p1"><rect x="8" y="46" width="110" height="168"/></clipPath><clipPath id="p2"><rect x="125" y="46" width="110" height="168"/></clipPath><clipPath id="p3"><rect x="242" y="46" width="110" height="168"/></clipPath></defs>
     <g clip-path="url(#p1)"><rect x="8" y="46" width="110" height="168" fill="#7ec3ec"/><circle cx="96" cy="70" r="12" fill="#ffe680"/>
@@ -918,11 +1008,11 @@ const CARTES_POSTALES = {
         <path d="M-34 -2 H34 L26 10 H-26Z" fill="#7a5230" stroke="${K}" stroke-width="2.5"/><path d="M26 -30 L40 14" stroke="#5b3a1e" stroke-width="3"/></g>
       <g transform="translate(262 196)"><ellipse rx="7" ry="4" fill="#fff" stroke="${K}" stroke-width="1.5"/><circle cx="5" cy="-4" r="3" fill="#2f8a6a" stroke="${K}" stroke-width="1.2"/></g></g>
     <g fill="none" stroke="${K}" stroke-width="3"><rect x="8" y="46" width="110" height="168"/><rect x="125" y="46" width="110" height="168"/><rect x="242" y="46" width="110" height="168"/></g>
-    <g font-family="monospace" font-weight="bold" font-size="13" fill="${K}" text-anchor="middle"><text x="63" y="232">La plage</text><text x="180" y="232">Le château</text><text x="297" y="232">Le marais</text></g>
+    <g font-family="monospace" font-weight="bold" font-size="13" fill="${K}" text-anchor="middle"><text x="63" y="232">${esc(t("cpPlage"))}</text><text x="180" y="232">${esc(t("cpChateau"))}</text><text x="297" y="232">${esc(t("cpMarais"))}</text></g>
     ${titreCP(8)}`),
 
   /* C — Le selfie : les deux amis en gros plan à la plage, l'île d'Yeu et son phare derrière */
-  C: sv("0 0 360 240",360,240,`
+  C: () => sv("0 0 360 240",360,240,`
     <defs><linearGradient id="csel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d8fd6"/><stop offset="1" stop-color="#bfe3f5"/></linearGradient></defs>
     <rect width="360" height="240" fill="url(#csel)"/><circle cx="60" cy="74" r="20" fill="#ffe680"/>
     <path d="M0 120 H360 V170 H0Z" fill="#2f7fc4"/>${vagues(140,5)}
@@ -937,11 +1027,11 @@ const CARTES_POSTALES = {
     ${titreCP()}${timbreCP()}`)
 };
 
-const CARTE_POSTALE = CARTES_POSTALES.B;
+const CARTE_POSTALE = () => CARTES_POSTALES.B();
 const MORCEAUX = { cols: 3, rangs: 2 };
 let cartePostale = null;
 function morceau(k, largeur){
-  if(!cartePostale) cartePostale = pixel(CARTE_POSTALE, 240, 160);
+  if(!cartePostale) cartePostale = pixel(CARTE_POSTALE(), 240, 160);
   return cartePostale.then(src => {
     const w = src.width / MORCEAUX.cols, h = src.height / MORCEAUX.rangs;
     const c = document.createElement("canvas"); c.width = w; c.height = h; c.className = "px";
@@ -958,12 +1048,12 @@ const morceauxObtenus = () => [S.introVue ? 0 : -1, ...JEU.etapes.map((e,i) => S
 function recompense(r, k, suite){
   vider();
   app.innerHTML = `${BADGE}<div class="centre">
-    <div class="p2" style="font-size:10px;color:var(--or)">Nouveau morceau !</div>
+    <div class="p2" style="font-size:10px;color:var(--or)">${t("nouveauMorceau")}</div>
     <div class="objet" id="obj" style="width:150px;border:4px solid var(--parch);box-shadow:0 0 0 3px #000"></div>
     <div class="p2" style="font-size:11px">${esc(r.nom)}</div>
     <div class="carton" style="font-size:19px">${esc(r.texte)}</div>
-    <div style="font-size:15px">Rangé dans le carnet du Roi (${morceauxObtenus().length}/6)</div>
-    <button class="btn" id="go">Retour à la carte ▶</button></div>`;
+    <div style="font-size:15px">${t("range")(morceauxObtenus().length)}</div>
+    <button class="btn" id="go">${t("retourCarte")}</button></div>`;
   morceau(k, "100%").then(c => app.querySelector("#obj").appendChild(c));
   app.querySelector("#go").onclick = suite || carte;
 }
@@ -980,12 +1070,12 @@ function puzzleCarte(){
   do { ordre.sort(() => Math.random() - .5); } while(ordre.some((v,i) => v === i)); // aucun morceau à sa place au départ
   let choisi = -1;
   app.innerHTML = `<div class="enigme">
-    <div class="entete"><span class="p2">Finale</span><span style="display:flex;gap:6px"><button class="btn mini clair" data-hud="carte">Carte</button></span></div>
+    <div class="entete"><span class="p2">${t("finale")}</span><span style="display:flex;gap:6px;align-items:center">${drapeaux()}<button class="btn mini clair" data-hud="carte">${t("carte")}</button></span></div>
     <div class="feuille"><p class="question" style="margin-right:0">${esc(f.puzzle)}</p>
       <div id="grille" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#2a2420;padding:4px"></div>
       <div class="msg" id="msg"></div></div>
-    <div class="indices-zone"><div class="p2" style="font-size:9px">Pièce d'indice</div>
-      <div class="pieces"><button class="piece" id="aide">?</button><span style="font-size:15px">Affiche le numéro de chaque morceau</span></div></div></div>`;
+    <div class="indices-zone"><div class="p2" style="font-size:9px">${t("pieceIndice")}</div>
+      <div class="pieces"><button class="piece" id="aide">?</button><span style="font-size:15px">${t("numeros")}</span></div></div></div>`;
   brancherHud();
   const grille = app.querySelector("#grille"), msg = app.querySelector("#msg");
   let numeros = false;
@@ -1000,7 +1090,7 @@ function puzzleCarte(){
       b.onclick = () => {
         if(choisi < 0){ choisi = pos; dessiner(); return; }
         [ordre[choisi], ordre[pos]] = [ordre[pos], ordre[choisi]]; choisi = -1; dessiner();
-        if(ordre.every((v,i) => v === i)){ msg.className = "msg ok"; msg.textContent = "Bravo ! La carte postale est complète !";
+        if(ordre.every((v,i) => v === i)){ msg.className = "msg ok"; msg.textContent = t("completeCP");
           grille.querySelectorAll("button").forEach(x => x.disabled = true); setTimeout(dosCarte, 1200); }
       };
       grille.appendChild(b);
@@ -1012,11 +1102,11 @@ function puzzleCarte(){
 function dosCarte(){
   vider();
   app.innerHTML = `${BADGE}<div class="centre">
-    <div class="p2" style="font-size:10px;color:var(--or)">Une carte postale !</div>
+    <div class="p2" style="font-size:10px;color:var(--or)">${t("uneCP")}</div>
     <div id="recto" style="width:100%;border:6px solid #fffaf0;box-shadow:0 0 0 3px #000"></div>
     <div class="carton" style="font-size:19px;text-align:left;font-style:italic;transform:rotate(-1deg)">${esc(JEU.finale.dos)}</div>
-    <button class="btn" id="go">Montrer au Roi ▶</button></div>`;
-  pixel(CARTE_POSTALE, 240, 160).then(c => { c.style.width = "100%"; app.querySelector("#recto").appendChild(c); });
+    <button class="btn" id="go">${t("montrer")}</button></div>`;
+  pixel(CARTE_POSTALE(), 240, 160).then(c => { c.style.width = "100%"; app.querySelector("#recto").appendChild(c); });
   app.querySelector("#go").onclick = () => scene({ decor:"mairie", perso:null, texte:JEU.finale.conclusion, lieu:JEU.finale.lieu, ici:"roi",
     fin: () => { S.fini = true; sauver(); victoire(); } });
 }
@@ -1024,10 +1114,10 @@ function dosCarte(){
 /* ---------- Fin : le Roi entouré de tous les personnages ---------- */
 function victoire(){
   vider();
-  const date = new Date().toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
+  const date = new Date().toLocaleDateString(t("locale"), { day:"numeric", month:"long", year:"numeric" });
   app.innerHTML = `${BADGE}<div class="fond" id="fond"></div>
     <div style="position:absolute;inset:0;background:linear-gradient(rgba(28,22,17,.15),rgba(28,22,17,.65))"></div>
-    <div class="p2" style="position:absolute;top:34px;left:0;right:0;text-align:center;font-size:13px;line-height:1.6;color:#fff;text-shadow:2px 2px 0 #000;z-index:3">Aventure terminée !</div>
+    <div class="p2" style="position:absolute;top:34px;left:0;right:0;text-align:center;font-size:13px;line-height:1.6;color:#fff;text-shadow:2px 2px 0 #000;z-index:3">${t("fini")}</div>
     <div id="groupe" style="position:absolute;left:0;right:0;bottom:236px;height:46%;z-index:2">
       <div id="g-romain" style="position:absolute;left:-2%;bottom:6%;width:34%"></div>
       <div id="g-marchande" style="position:absolute;right:-2%;bottom:6%;width:34%"></div>
@@ -1038,12 +1128,12 @@ function victoire(){
     </div>
     <div class="bas" style="gap:8px">
       <div class="carton" style="text-align:center">
-        <div class="p2" style="font-size:8px;color:var(--bois);margin-bottom:8px">Chevaliers des Trois Piliers</div>
+        <div class="p2" style="font-size:8px;color:var(--bois);margin-bottom:8px">${t("chevaliers")}</div>
         <div style="font-size:24px">${esc(S.equipe)}</div>
-        <div style="font-size:17px;margin-top:4px">a retrouvé les amis du Roi des menhirs le ${date}</div>
-        <div style="font-size:15px;color:#6b5a48;margin-top:6px">${S.indices} indice${S.indices>1?"s":""} utilisé${S.indices>1?"s":""}</div>
+        <div style="font-size:17px;margin-top:4px">${t("retrouve")(date)}</div>
+        <div style="font-size:15px;color:#6b5a48;margin-top:6px">${t("indicesUtilises")(S.indices)}</div>
       </div>
-      <button class="btn clair" id="acc">Accueil</button></div>`;
+      <button class="btn clair" id="acc">${t("accueil")}</button></div>`;
   monter("#fond", DECORS.accueil, 150, 200);
   const grp = app.querySelector("#groupe"), roiEl = app.querySelector("#g-roi");
   /* Gaston se perche sur la couronne du Roi */
@@ -1062,13 +1152,13 @@ function victoire(){
 function carnet(){
   const v = document.createElement("div"); v.className = "voile";
   const eus = morceauxObtenus();
-  v.innerHTML = `<div class="carnet"><h2 class="p2">Carnet du Roi</h2>
-    <div class="p2" style="font-size:8px">Morceaux de carton (${eus.length}/6)</div>
-    <div class="grille">${[0,1,2,3,4,5].map(n => n < eus.length ? `<div class="case" data-m="${eus[n]}">Morceau ${n+1}</div>` : `<div class="case vide"><div class="p2">?</div></div>`).join("")}</div>
-    <div class="p2" style="font-size:8px">Rencontres</div>
-    <div class="grille">${S.introVue ? `<div class="case" data-p="roi">Le Roi</div>` : `<div class="case vide"><div class="p2">?</div></div>`}${JEU.etapes.map((e,i)=> S.persos.includes(e.perso.nom) ? `<div class="case" data-p="${i}">${esc(e.perso.nom)}</div>` : `<div class="case vide"><div class="p2">?</div></div>`).join("")}</div>
-    <p style="font-size:17px">Indices utilisés : ${S.indices}</p>
-    <button class="btn clair" id="ferm">Fermer</button></div>`;
+  v.innerHTML = `<div class="carnet"><h2 class="p2">${t("carnetTitre")}</h2>
+    <div class="p2" style="font-size:8px">${t("morceaux")(eus.length)}</div>
+    <div class="grille">${[0,1,2,3,4,5].map(n => n < eus.length ? `<div class="case" data-m="${eus[n]}">${t("morceau")(n+1)}</div>` : `<div class="case vide"><div class="p2">?</div></div>`).join("")}</div>
+    <div class="p2" style="font-size:8px">${t("rencontres")}</div>
+    <div class="grille">${S.introVue ? `<div class="case" data-p="roi">${t("leRoi")}</div>` : `<div class="case vide"><div class="p2">?</div></div>`}${JEU.etapes.map((e,i)=> S.faites.includes(e.id) ? `<div class="case" data-p="${i}">${esc(e.perso.nom)}</div>` : `<div class="case vide"><div class="p2">?</div></div>`).join("")}</div>
+    <p style="font-size:17px">${t("indicesCarnet")(S.indices)}</p>
+    <button class="btn clair" id="ferm">${t("fermer")}</button></div>`;
   document.body.appendChild(v);
   v.querySelectorAll("[data-m]").forEach(el => morceau(+el.dataset.m, "100%").then(c => el.prepend(c)));
   v.querySelectorAll("[data-p]").forEach(el => { const d = document.createElement("div"); el.prepend(d); monter(d, PERSOS[el.dataset.p === "roi" ? "roi" : JEU.etapes[+el.dataset.p].perso.dessin], 72, 114); });

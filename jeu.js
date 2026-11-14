@@ -3,7 +3,7 @@
    C'est le seul fichier à modifier pour changer les textes, énigmes et indices.
    Attention à garder les guillemets " et les virgules , en place.
    ================================================================= */
-const JEU = {
+const JEU_FR = {
   /* =================================================================
      CONTENU DU JEU — la seule partie qu'Arthur modifie.
      Chaque personnage parle directement aux joueurs.

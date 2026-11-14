@@ -7,7 +7,8 @@ Plan : © contributeurs OpenStreetMap (licence ODbL).
 
 | Fichier | À quoi il sert | Faut-il le modifier ? |
 |---|---|---|
-| `jeu.js` | Tout le contenu : dialogues, énigmes, indices, réponses, textes de fin | **Oui, c'est le seul fichier à modifier** |
+| `jeu.js` | Tout le contenu en **français** : dialogues, énigmes, indices, réponses, textes de fin | **Oui** |
+| `jeu-en.js` | Le même contenu en **anglais** | **Oui** (penser à reporter les changements dans les deux langues) |
 | `index.html` | Le moteur du jeu (écrans, dessins, carte) | Non |
 | `sw.js` | Le mode hors ligne | Seulement le numéro de `VERSION` (voir plus bas) |
 | `manifest.webmanifest`, `icone-*.png` | Nom et icône quand on ajoute le jeu à l'écran d'accueil | Non |
@@ -22,11 +23,17 @@ Plan : © contributeurs OpenStreetMap (licence ODbL).
 
 Astuce : pour une apostrophe, utiliser `'` normalement. Pour des guillemets dans un texte, utiliser « » plutôt que `"`.
 
+## Langues
+
+Deux petits drapeaux en haut de l'écran permettent de passer du français à l'anglais à tout moment (la progression est conservée).
+Au premier lancement, le jeu s'ouvre en anglais si le téléphone est réglé en anglais, sinon en français.
+Les textes de l'interface (boutons, messages) sont dans `index.html`, dans le bloc `TXT` en haut du script.
+
 ## Mode hors ligne
 
 À la première ouverture, le téléphone enregistre le jeu. Ensuite il fonctionne sans réseau.
 Avec du réseau, le jeu charge toujours la dernière version : les corrections arrivent toutes seules.
-Après une grosse mise à jour, augmenter le numéro dans `sw.js` : `roi-menhirs-v1` → `roi-menhirs-v2`.
+Après une grosse mise à jour, augmenter le numéro dans `sw.js` : `roi-menhirs-v2` → `roi-menhirs-v3`.
 
 ## Version démo
 

@@ -2,8 +2,8 @@
    Avec du réseau : on charge toujours la version la plus récente (les corrections arrivent tout de suite).
    Sans réseau : on utilise la copie enregistrée dans le téléphone.
    Augmenter VERSION à chaque mise à jour importante. */
-const VERSION = "roi-menhirs-v1";
-const FICHIERS = ["./", "index.html", "jeu.js", "manifest.webmanifest", "icone-192.png", "icone-512.png"];
+const VERSION = "roi-menhirs-v2";
+const FICHIERS = ["./", "index.html", "jeu.js", "jeu-en.js", "manifest.webmanifest", "icone-192.png", "icone-512.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FICHIERS)).then(() => self.skipWaiting()));
