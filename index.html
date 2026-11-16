@@ -206,6 +206,10 @@ const TXT = {
     revoila: "Vous revoilà ! Je n'ai plus rien pour vous… Mais je peux vous raconter les histoires de mon lieu, ou vous reproposer mon petit jeu !",
     apresHistoires: "Voilà pour mes histoires ! Je peux faire autre chose pour vous ?", apresJeu: "Bien joué, encore une fois ! Je peux faire autre chose pour vous ?",
     choixHistoires: "📜 Raconte-moi tes histoires", choixRejouer: "🎲 Rejouer ton jeu", choixNon: "Non merci",
+    etape0: "Le Roi des menhirs — introduction", revoirIntro: "Touchez pour réécouter le Roi",
+    revoilaRoi: "Ah, vous revoilà ! Vous voulez que je vous raconte encore mon histoire depuis le début ?",
+    apresIntro: "Voilà, vous savez tout ! Je compte sur vous… Je peux faire autre chose pour vous ?",
+    choixIntro: "📜 Raconte-moi encore ton histoire",
     cpTitre: "Bons baisers de Vendée !", cpPlage: "La plage", cpChateau: "Le château", cpMarais: "Le marais"
   },
   en: {
@@ -234,6 +238,10 @@ const TXT = {
     revoila: "You're back! I have nothing left to give you… But I can tell you the stories of this place, or let you play my little game again!",
     apresHistoires: "That's all my stories! Can I do anything else for you?", apresJeu: "Well done, once again! Can I do anything else for you?",
     choixHistoires: "📜 Tell me your stories", choixRejouer: "🎲 Play your game again", choixNon: "No thanks",
+    etape0: "The Menhir King — introduction", revoirIntro: "Tap to listen to the King again",
+    revoilaRoi: "Ah, you're back! Would you like me to tell you my story again from the beginning?",
+    apresIntro: "There, now you know everything! I'm counting on you… Can I do anything else for you?",
+    choixIntro: "📜 Tell me your story again",
     cpTitre: "Greetings from Vendée!", cpPlage: "The beach", cpChateau: "The castle", cpMarais: "The marsh"
   }
 };
@@ -763,6 +771,8 @@ function carte(){
     </div>
     <div class="osm">${t("osm")((LONGUEUR_M/1000).toFixed(1))}</div>
     <div class="liste">
+      <button class="ligne" data-c="r0"><span class="n" style="background:${coul("fait")}">0</span>
+        <span>${t("etape0")}<small>${t("revoirIntro")}</small></span></button>
       ${JEU.etapes.map((e,i) => { const s = etat(i); return `<button class="ligne ${s==="verrou"?"verrou":""}" data-c="${i}">
         <span class="n" style="background:${coul(s)}">${s==="fait"?"✓":i+1}</span>
         <span>${esc(e.lieu)}<small>${s==="fait" ? t("termine")(esc(e.perso.nom)) : s==="suivant" ? t("allez") : t("verrouille")}</small></span></button>`; }).join("")}
@@ -775,9 +785,19 @@ function carte(){
   app.querySelector("#carnetBtn").onclick = carnet; brancherLangues();
   app.querySelectorAll("[data-c]").forEach(b => b.onclick = () => {
     const c = b.dataset.c;
+    if(c === "r0") return revisiteRoi();
     if(c === "f"){ if(etatF === "suivant") finale(); return; }
     if(etat(+c) === "suivant") etape(+c); else if(etat(+c) === "fait") revisite(+c);
   });
+}
+
+/* Étape 0 : revoir le Roi et réécouter son introduction (sans redonner le morceau de carton) */
+function revisiteRoi(retour){
+  const options = [
+    { texte: t("choixIntro"), action: () => scene({ decor:"mairie", perso:null, lieu:t("jardin"), ici:"roi", texte: JEU.intro, fin: () => revisiteRoi(true) }) },
+    { texte: t("choixNon"), clair: true, action: carte }
+  ];
+  scene({ decor:"mairie", perso:null, lieu:t("jardin"), ici:"roi", texte:[retour ? t("apresIntro") : t("revoilaRoi")], choix:options });
 }
 
 /* Revoir un personnage déjà aidé : anecdotes, rejouer son jeu, ou non merci */
