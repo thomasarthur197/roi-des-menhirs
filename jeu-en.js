@@ -28,6 +28,11 @@ const JEU_EN = {
         "The King's friends? I picked up a piece of cardboard last night. I put it away in my soldier's chest…",
         "But the padlock has a code written the Roman way! We Romans wrote numbers with letters. Will you help me?"
       ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "Ave, adventurers! I'm Caius, a Roman soldier. People say my legionary friends came to drink at this well… well, that's what people say!",
+        "This well is very, very old. Before taps, the whole village came here to fetch water. Even the horses from the inn drank here!",
+        "Look right at the top: that big black ball is a cannonball! A souvenir of a battle at Les Sables-d'Olonne, in 1696."
+      ],
       enigme: { type: "cadenas", taille: 3,
         question: "For the Romans: I = 1 and V = 5. An I AFTER the V is added. An I BEFORE the V is taken away. My chest's code is: III – IV – VI. Open it!",
         image: ["III", "IV", "VI"],
@@ -49,6 +54,11 @@ const JEU_EN = {
         "One night, I saw two tall shadows walking along the road… And they dropped a piece of cardboard!",
         "It's yours if you find my heaviest bell. Here is my old scale… but it's tired: only two weighings!"
       ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "Cock-a-doodle-doooo! Up here! Right at the top of the bell tower! I'm Gaston, the church rooster.",
+        "From up here, I can see the whole village. But careful, my bell tower hasn't always stood up! In 1805, it collapsed. Crash!",
+        "It was rebuilt, and three bells were put inside. Ding, Dang and Dong!"
+      ],
       enigme: { type: "balance", pesees: 2,
         question: "My scale only tells which of two bells is heavier. With 2 weighings at most, find the heaviest bell!",
         objets: [ { texte: "Ding", couleur: "#c8352b" }, { texte: "Dang", couleur: "#2f6fc4" }, { texte: "Dong", couleur: "#3d8a2e" } ] },
@@ -67,6 +77,11 @@ const JEU_EN = {
         "This market hall was built in 1858. And in Avrillé, there have been markets for more than 600 years!",
         "In the old days, there were plays and films here too. Children climbed onto the shelves between the pillars to get a better view!",
         "The King's friends? I found a funny piece of cardboard under my stall… It's yours if you help me get the market ready!"
+      ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "Come closer, come closer! Welcome to the market! Here we sell vegetables, fruit and lovely cheese.",
+        "This market hall was built in 1858. And in Avrillé, there have been markets for more than 600 years!",
+        "In the old days, there were plays and films here too. Children climbed onto the shelves between the pillars to get a better view!"
       ],
       enigme: { type: "cadenas", taille: 2,
         question: "Tomorrow is market day! I want to put one stall between each pair of pillars, on BOTH long sides of the hall. Count the pillars on one side… then on the other! How many stalls can I set up in total?",
@@ -89,6 +104,11 @@ const JEU_EN = {
         "The King's friends came by here at sunrise. They left me a piece of cardboard… It's stuck under me!",
         "But how heavy am I? Put these things in order from lightest to heaviest, and I'll lift myself up a little to give it to you!"
       ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "I'm a standing stone too, but I live in the countryside. The view from here is wonderful!",
+        "More than 60 years ago, I fell over… SPLASH, into a pond! I waited years before they stood me back up, in 1986.",
+        "And to lift me up, they needed TWO cranes! I'm quite a big chunk, aren't I?"
+      ],
       enigme: { type: "classement",
         question: "Put these things in order from lightest to heaviest!",
         objets: [
@@ -109,6 +129,10 @@ const JEU_EN = {
         "They beat the laundry with a wooden paddle, slap, slap, slap! And they chatted and chatted… The wash house was where everyone shared the news!",
         "And me, I hear all the news… The two standing stones stopped here for a drink. They wanted to visit the home of someone very brave!",
         "Who? I wrote it down as a picture puzzle… Ribbit!"
+      ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "Ribbit! Welcome to my wash house! In the old days, women came here to wash clothes in the water of the stream.",
+        "They beat the laundry with a wooden paddle, slap, slap, slap! And they chatted and chatted… The wash house was where everyone shared the news!"
       ],
       enigme: { type: "texte",
         question: "Solve the picture puzzle: whose home did the standing stones want to visit? (Careful: the K is silent!)",

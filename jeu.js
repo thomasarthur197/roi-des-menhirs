@@ -34,6 +34,11 @@ const JEU_FR = {
         "Les amis du Roi ? J'ai ramassé un morceau de carton cette nuit. Je l'ai rangé dans mon coffre de soldat…",
         "Mais le cadenas a un code écrit à la romaine ! Nous, les Romains, on écrivait les nombres avec des lettres. Vous m'aidez ?"
       ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "Ave, aventuriers ! Je suis Caius, soldat romain. On raconte que mes copains légionnaires venaient boire à ce puits… Enfin, c'est ce qu'on raconte !",
+        "Ce puits est très, très vieux. Avant les robinets, tout le village venait y chercher son eau. Même les chevaux de l'auberge venaient boire ici !",
+        "Regardez tout en haut : la grosse boule noire, c'est un boulet de canon ! Un souvenir d'une bataille aux Sables-d'Olonne, en 1696."
+      ],
       enigme: { type: "cadenas", taille: 3,
         question: "Chez les Romains : I = 1 et V = 5. Un I collé APRÈS le V, on l'ajoute. Un I collé AVANT le V, on l'enlève. Le code de mon coffre est : III – IV – VI. Ouvrez-le !",
         image: ["III", "IV", "VI"],
@@ -55,6 +60,11 @@ const JEU_FR = {
         "Une nuit, j'ai vu deux grandes ombres passer sur la route… Et elles ont fait tomber un morceau de carton !",
         "Je vous le donne si vous trouvez quelle est ma cloche la plus lourde. Voici ma vieille balance… mais elle est fatiguée : seulement deux pesées !"
       ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "Cocoricooo ! Ici, là-haut ! Tout en haut du clocher ! Je suis Gaston, le coq de l'église.",
+        "D'ici, je vois tout le village. Mais attention, mon clocher n'a pas toujours tenu debout ! En 1805, il s'est écroulé. Patatras !",
+        "On l'a reconstruit, et on y a installé trois cloches. Ding, Dang et Dong !"
+      ],
       enigme: { type: "balance", pesees: 2,
         question: "Ma balance dit seulement laquelle de deux cloches est la plus lourde. Avec 2 pesées maximum, trouvez la cloche la plus lourde !",
         objets: [ { texte: "Ding", couleur: "#c8352b" }, { texte: "Dang", couleur: "#2f6fc4" }, { texte: "Dong", couleur: "#3d8a2e" } ] },
@@ -73,6 +83,11 @@ const JEU_FR = {
         "Ces halles ont été construites en 1858. Et à Avrillé, il y a des marchés depuis plus de 600 ans !",
         "Autrefois, il y avait aussi du théâtre et du cinéma ici. Les enfants grimpaient sur les étagères entre les piliers pour mieux voir !",
         "Les amis du Roi ? J'ai trouvé un drôle de carton sous mon étal… Il est à vous si vous m'aidez à préparer le marché !"
+      ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "Approchez, approchez ! Bienvenue au marché ! Ici, on vend des légumes, des fruits et du bon fromage.",
+        "Ces halles ont été construites en 1858. Et à Avrillé, il y a des marchés depuis plus de 600 ans !",
+        "Autrefois, il y avait aussi du théâtre et du cinéma ici. Les enfants grimpaient sur les étagères entre les piliers pour mieux voir !"
       ],
       enigme: { type: "cadenas", taille: 2,
         question: "Demain, c'est jour de marché ! Je veux mettre un stand entre chaque pilier, sur les DEUX grands côtés des halles. Comptez les piliers d'un côté… puis de l'autre ! Combien de stands je peux installer en tout ?",
@@ -95,6 +110,11 @@ const JEU_FR = {
         "Les amis du Roi sont passés par ici au lever du soleil. Ils m'ont laissé un morceau de carton… Il est coincé sous moi !",
         "Mais lourd comment ? Rangez ces objets du plus léger au plus lourd, et je me soulèverai un peu pour vous le donner !"
       ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "Moi, je suis un menhir aussi, mais je vis à la campagne. D'ici, la vue est magnifique !",
+        "Il y a plus de 60 ans, je suis tombé… PLOUF, dans une mare ! J'ai attendu des années avant qu'on me remette debout, en 1986.",
+        "Et pour me relever, il a fallu DEUX grues ! Je suis un sacré morceau, hein ?"
+      ],
       enigme: { type: "classement",
         question: "Rangez ces objets du plus léger au plus lourd !",
         objets: [ /* dans l'ordre correct, du plus léger au plus lourd ; l'écran les mélange */
@@ -115,6 +135,10 @@ const JEU_FR = {
         "Elles tapaient le linge avec un battoir, paf, paf, paf ! Et elles papotaient, papotaient… Le lavoir, c'était l'endroit où on se racontait toutes les nouvelles !",
         "Et les nouvelles, moi, je les entends toutes… Les deux menhirs se sont arrêtés ici pour boire. Ils voulaient visiter un endroit plein d'histoire !",
         "Lequel ? Je l'ai noté en rébus… Croâ !"
+      ],
+      anecdotes: [ /* répliques racontées quand on revient voir le personnage */
+        "Croâ ! Bienvenue dans mon lavoir ! Autrefois, les dames venaient laver le linge ici, dans l'eau du ruisseau.",
+        "Elles tapaient le linge avec un battoir, paf, paf, paf ! Et elles papotaient, papotaient… Le lavoir, c'était l'endroit où on se racontait toutes les nouvelles !"
       ],
       enigme: { type: "texte",
         question: "Devinez le rébus : quel endroit plein d'histoire les menhirs voulaient-ils visiter ?",

@@ -70,6 +70,9 @@
   .prog i.roi{background:var(--or)}
   .hud-d{display:flex;gap:6px;flex:none}
 
+  .choix-bulle{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .choix-bulle .btn{font-size:9px;padding:10px}
+
   /* --- Drapeaux de langue --- */
   .langues{display:inline-flex;gap:4px;align-items:center}
   .drapeau{padding:2px;border:2px solid #000;background:#fffaf0;cursor:pointer;line-height:0;opacity:.55}
@@ -132,7 +135,7 @@
     box-shadow:0 0 0 1.5px #fffaf0, 1px 2px 0 1.5px rgba(0,0,0,.35)}
   .mq::before{content:"";position:absolute;inset:-10px;border-radius:50%} /* zone tactile élargie, invisible */
   .mq.suivant{background:var(--rouge);z-index:3;animation:pulse 1s ease-in-out infinite}
-  .mq.fait{background:var(--vert)} .mq.verrou{background:#8a7a66;cursor:default}
+  .mq.fait{background:var(--vert);cursor:pointer} .mq.verrou{background:#8a7a66;cursor:default}
   .mq.petit{width:16px;height:16px}
   @keyframes pulse{50%{box-shadow:0 0 0 1.5px #fffaf0, 0 0 0 6px rgba(184,67,44,.45)}}
   @keyframes saute{50%{transform:translate(-50%,-62%)}}
@@ -182,7 +185,7 @@ const TXT = {
     equipeDefaut: "Les Aventuriers", recommencerQ: "Recommencer ?", effacer: "Toute la progression de l'équipe sera effacée.", oui: "Oui, recommencer", annuler: "Annuler",
     carte: "Carte", carnet: "Carnet", jardin: "Jardin de la mairie", leRoi: "Le Roi", bourg: "Le bourg",
     osm: km => `Plan : © contributeurs OpenStreetMap · parcours ${km.replace(".", ",")} km`,
-    termine: nom => `Terminé — ${nom} vous a aidés`, allez: "Allez sur place, puis touchez ici", verrouille: "Verrouillé",
+    termine: nom => `Terminé — touchez pour revoir ${nom}`, allez: "Allez sur place, puis touchez ici", verrouille: "Verrouillé",
     finaleVerrou: "Finale — trouvez d'abord tous les indices", finaleOuverte: "Retournez voir le Roi !",
     ouvrirCadenas: "Ouvrir le cadenas", votreReponse: "Votre réponse…", valider: "Valider",
     toucher2: "1. Touchez 2 cloches pour les poser sur la balance", peser: "⚖️ Peser", laquelle: "2. Laquelle est la plus lourde ?",
@@ -200,6 +203,9 @@ const TXT = {
     indicesUtilises: n => `${n} indice${n > 1 ? "s" : ""} utilisé${n > 1 ? "s" : ""}`, accueil: "Accueil", locale: "fr-FR",
     carnetTitre: "Carnet du Roi", morceaux: n => `Morceaux de carton (${n}/6)`, morceau: n => `Morceau ${n}`, rencontres: "Rencontres",
     indicesCarnet: n => `Indices utilisés : ${n}`, fermer: "Fermer",
+    revoila: "Vous revoilà ! Je n'ai plus rien pour vous… Mais je peux vous raconter les histoires de mon lieu, ou vous reproposer mon petit jeu !",
+    apresHistoires: "Voilà pour mes histoires ! Je peux faire autre chose pour vous ?", apresJeu: "Bien joué, encore une fois ! Je peux faire autre chose pour vous ?",
+    choixHistoires: "📜 Raconte-moi tes histoires", choixRejouer: "🎲 Rejouer ton jeu", choixNon: "Non merci",
     cpTitre: "Bons baisers de Vendée !", cpPlage: "La plage", cpChateau: "Le château", cpMarais: "Le marais"
   },
   en: {
@@ -207,7 +213,7 @@ const TXT = {
     equipeDefaut: "The Adventurers", recommencerQ: "Start again?", effacer: "All of the team's progress will be erased.", oui: "Yes, start again", annuler: "Cancel",
     carte: "Map", carnet: "Notebook", jardin: "Town hall garden", leRoi: "The King", bourg: "Village centre",
     osm: km => `Map: © OpenStreetMap contributors · route ${km} km`,
-    termine: nom => `Done — ${nom} helped you`, allez: "Go there, then tap here", verrouille: "Locked",
+    termine: nom => `Done — tap to visit ${nom} again`, allez: "Go there, then tap here", verrouille: "Locked",
     finaleVerrou: "Finale — find all the clues first", finaleOuverte: "Go back to the King!",
     ouvrirCadenas: "Open the padlock", votreReponse: "Your answer…", valider: "Check",
     toucher2: "1. Tap 2 bells to put them on the scale", peser: "⚖️ Weigh", laquelle: "2. Which one is the heaviest?",
@@ -225,6 +231,9 @@ const TXT = {
     indicesUtilises: n => `${n} hint${n > 1 ? "s" : ""} used`, accueil: "Home", locale: "en-GB",
     carnetTitre: "The King's notebook", morceaux: n => `Pieces of cardboard (${n}/6)`, morceau: n => `Piece ${n}`, rencontres: "Characters met",
     indicesCarnet: n => `Hints used: ${n}`, fermer: "Close",
+    revoila: "You're back! I have nothing left to give you… But I can tell you the stories of this place, or let you play my little game again!",
+    apresHistoires: "That's all my stories! Can I do anything else for you?", apresJeu: "Well done, once again! Can I do anything else for you?",
+    choixHistoires: "📜 Tell me your stories", choixRejouer: "🎲 Play your game again", choixNon: "No thanks",
     cpTitre: "Greetings from Vendée!", cpPlage: "The beach", cpChateau: "The castle", cpMarais: "The marsh"
   }
 };
@@ -611,7 +620,7 @@ const REMONTE = { mairie:1.35, puits:1.3, halles:1.4, eglise:1, boiliere:1.15, l
 /* Taille du personnage dans sa scène (1 = normal) */
 const TAILLE = { coq: .6 };
 const COUPE = { roi:138, romain:134, marchande:126, boiliere:142, grenouille:170, mystere:140 }; // les menhirs ne bougent pas, même pas pour respirer
-function scene({ decor, perso, texte, fin, lieu, ici }){
+function scene({ decor, perso, texte, fin, lieu, ici, choix }){
   vider();
   const p = perso || { nom: t("leRoi"), dessin: "roi" };
   const L = texte.map(l => l.startsWith("ROI:") ? l.slice(4).trim() : l);
@@ -631,14 +640,24 @@ function scene({ decor, perso, texte, fin, lieu, ici }){
   placer(); addEventListener("resize", placer);
   let i = 0, ecrit = false;
   const txt = app.querySelector("#txt"), plume = app.querySelector(".plume");
+  /* Après la dernière réplique : soit on continue (fin), soit on affiche des boutons de choix dans la bulle */
+  const afficherChoix = () => {
+    plume.style.display = "none";
+    const z = document.createElement("div"); z.className = "choix-bulle";
+    choix.forEach(c => { const b = document.createElement("button"); b.className = "btn" + (c.clair ? " clair" : ""); b.textContent = c.texte;
+      b.onclick = ev => { ev.stopPropagation(); c.action(); }; z.appendChild(b); });
+    bulle.appendChild(z); placer();
+  };
+  const finLigne = () => { ecrit = false; plume.style.visibility = "visible"; if(choix && i === L.length - 1 && !bulle.querySelector(".choix-bulle")) afficherChoix(); };
   function montrer(){
     let k = 0; ecrit = true; plume.style.visibility = "hidden"; txt.textContent = "";
     clearInterval(minuteur);
     minuteur = setInterval(() => { k++; txt.textContent = L[i].slice(0,k);
-      if(k >= L[i].length){ clearInterval(minuteur); ecrit = false; plume.style.visibility = "visible"; } }, 24);
+      if(k >= L[i].length){ clearInterval(minuteur); finLigne(); } }, 24);
   }
   app.querySelector("#bulle").onclick = () => {
-    if(ecrit){ clearInterval(minuteur); txt.textContent = L[i]; ecrit = false; plume.style.visibility = "visible"; return; }
+    if(ecrit){ clearInterval(minuteur); txt.textContent = L[i]; finLigne(); return; }
+    if(choix && i === L.length - 1) return;
     i++; i < L.length ? montrer() : fin();
   };
   montrer();
@@ -757,8 +776,22 @@ function carte(){
   app.querySelectorAll("[data-c]").forEach(b => b.onclick = () => {
     const c = b.dataset.c;
     if(c === "f"){ if(etatF === "suivant") finale(); return; }
-    if(etat(+c) === "suivant") etape(+c);
+    if(etat(+c) === "suivant") etape(+c); else if(etat(+c) === "fait") revisite(+c);
   });
+}
+
+/* Revoir un personnage déjà aidé : anecdotes, rejouer son jeu, ou non merci */
+function revisite(i, retour){
+  const e = JEU.etapes[i];
+  const options = [
+    { texte: t("choixHistoires"), action: () => scene({ decor:e.decor, perso:e.perso, lieu:e.lieu, ici:e.id,
+        texte: e.anecdotes && e.anecdotes.length ? e.anecdotes : e.dialogue, fin: () => revisite(i, "histoires") }) },
+    { texte: t("choixRejouer"), action: () => enigme({ num:i+1, perso:e.perso, enig:e.enigme, indices:e.indices, rejeu:true,
+        reussi: () => revisite(i, "jeu") }) },
+    { texte: t("choixNon"), clair: true, action: carte }
+  ];
+  const accueilRevisite = retour === "histoires" ? t("apresHistoires") : retour === "jeu" ? t("apresJeu") : t("revoila");
+  scene({ decor:e.decor, perso:e.perso, lieu:e.lieu, ici:e.id, texte:[accueilRevisite], choix:options });
 }
 
 function etape(i){
@@ -772,7 +805,7 @@ function etape(i){
 }
 
 /* Écran d'énigme façon Layton : numéro, feuille, pièces-indices */
-function enigme({ num, perso, enig, indices, reussi }){
+function enigme({ num, perso, enig, indices, reussi, rejeu }){
   vider();
   let vus = 0, saisie = "";
   if(enig.type === "cadenas"){
@@ -896,7 +929,7 @@ function enigme({ num, perso, enig, indices, reussi }){
     const k = +p.dataset.i; if(k !== vus) return;
     const d = document.createElement("div"); d.className = "indice"; d.textContent = t("indice")(k+1, indices[k]);
     app.querySelector("#indZone").appendChild(d); p.disabled = true; p.textContent = "✓";
-    vus++; S.indices++; sauver();
+    vus++; if(!rejeu){ S.indices++; sauver(); }
     const suiv = app.querySelector(`.piece[data-i="${vus}"]`); if(suiv) suiv.disabled = false;
   });
 }
